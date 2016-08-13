@@ -1,0 +1,20 @@
+{% set stickyID = [] %}
+{% for item in stickypost %}
+  {% set stickyID = stickyID|merge([item.id]) %}
+  <div>
+    <h5><a href="{{ item.link }}">{{ item.title }}</a></h5>
+    {{stickyID|print_r}}
+  </div>
+  <br>
+  <br>
+{% endfor %}
+
+{{stickyID|print_r}}
+<br>
+<br>
+
+{% for post in posts %}
+  {{post._cmb_sticky_post}}
+  <div><a href="{{ post.link }}">{{ post.title }}</a></div>
+  <br>
+{% endfor %}
