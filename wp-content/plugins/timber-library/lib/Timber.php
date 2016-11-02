@@ -35,7 +35,7 @@ use Timber\Loader;
  */
 class Timber {
 
-	public static $version = '1.1.1';
+	public static $version = '1.1.8';
 	public static $locations;
 	public static $dirname = 'views';
 	public static $twig_cache = false;
@@ -56,7 +56,7 @@ class Timber {
 			$this->test_compatibility();
 			$this->backwards_compatibility();
 			$this->init_constants();
-			$this::init();
+			self::init();
 		}
 	}
 
@@ -82,7 +82,7 @@ class Timber {
 			//already run, so bail
 			return;
 		}
-		$names = array('Archives', 'Comment', 'Core', 'FunctionWrapper', 'Helper', 'Image', 'ImageHelper', 'Integrations', 'Loader', 'Menu', 'MenuItem', 'Post', 'PostGetter', 'PostsCollection', 'QueryIterator', 'Request', 'Site', 'Term', 'TermGetter', 'Theme', 'Twig', 'URLHelper', 'User', 'Integrations\Command', 'Integrations\ACF');
+		$names = array('Archives', 'Comment', 'Core', 'FunctionWrapper', 'Helper', 'Image', 'ImageHelper', 'Integrations', 'Loader', 'Menu', 'MenuItem', 'Post', 'PostGetter', 'PostCollection', 'QueryIterator', 'Request', 'Site', 'Term', 'TermGetter', 'Theme', 'Twig', 'URLHelper', 'User', 'Integrations\Command', 'Integrations\ACF');
 		foreach ( $names as $name ) {
 			$old_class_name = 'Timber'.str_replace('Integrations\\', '', $name);
 			$new_class_name = 'Timber\\'.$name;
@@ -108,7 +108,7 @@ class Timber {
 			Twig::init();
 			ImageHelper::init();
 			Admin::init();
-			Integrations::init();
+			new Integrations();
 			define('TIMBER_LOADED', true);
 		}
 	}
@@ -161,7 +161,7 @@ class Timber {
 	 * @api
 	 * @param mixed   $query
 	 * @param string  $PostClass
-	 * @return array|bool|null
+	 * @return PostCollection
 	 */
 	public static function query_posts( $query = false, $PostClass = 'Timber\Post' ) {
 		return PostGetter::query_posts($query, $PostClass);
@@ -225,7 +225,7 @@ class Timber {
 	 */
 	public static function get_context() {
 		if ( empty(self::$context_cache) ) {
-			self::$context_cache['http_host'] = 'http://'.URLHelper::get_host();
+			self::$context_cache['http_host'] = URLHelper::get_scheme().'://'.URLHelper::get_host();
 			self::$context_cache['wp_title'] = Helper::get_wp_title();
 			self::$context_cache['wp_head'] = Helper::function_wrapper('wp_head');
 			self::$context_cache['wp_footer'] = Helper::function_wrapper('wp_footer');
@@ -237,8 +237,10 @@ class Timber {
 			self::$context_cache['user'] = ($user->ID) ? $user : false;
 			self::$context_cache['theme'] = self::$context_cache['site']->theme;
 
+			//Not yet! but this will soon be the default...
+			//self::$context_cache['posts'] = new PostQuery();
 			self::$context_cache['posts'] = Timber::query_posts();
-
+			
 			self::$context_cache = apply_filters('timber_context', self::$context_cache);
 			self::$context_cache = apply_filters('timber/context', self::$context_cache);
 		}
@@ -252,7 +254,7 @@ class Timber {
 	 * @api
 	 * @param array   $filenames
 	 * @param array   $data
-	 * @param bool    $expires
+	 * @param boolean|integer    $expires
 	 * @param string  $cache_mode
 	 * @param bool    $via_render
 	 * @return bool|string
@@ -324,9 +326,9 @@ class Timber {
 	 * @api
 	 * @param array   $filenames
 	 * @param array   $data
-	 * @param bool    $expires
+	 * @param boolean|integer    $expires
 	 * @param string  $cache_mode
-	 * @return bool|string
+	 * @return boolean|string
 	 */
 	public static function render( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
 		$output = self::fetch($filenames, $data, $expires, $cache_mode);

@@ -20,13 +20,13 @@
 
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define('DB_NAME', 'demowp_enreedu_update');
+define('DB_NAME', 'demowp_enre');
 
 /** MySQL database username */
 define('DB_USER', 'root');
 
 /** MySQL database password */
-define('DB_PASSWORD', '');
+define('DB_PASSWORD', '1');
 
 /** MySQL hostname */
 define('DB_HOST', 'localhost');
@@ -54,6 +54,8 @@ define('AUTH_SALT',        '9UWK^t,m/@<0gdQz&<Az cH8Oy>^uc(#S*dyitD54|PI}}3lMtVu
 define('SECURE_AUTH_SALT', 'rM@8v~`5w}Dr!!{oF1~G4Ig?(oT~;E:f1L<=&j`uC6z1}OfPoz179,OJL|7kaJ=J');
 define('LOGGED_IN_SALT',   '.`(UmBg}w_g=|wUpqmHLK^r{:wF~iB*/=W}2xi!ET0tkP6  0J>q:r0FG9Me/Yqh');
 define('NONCE_SALT',       'l25H{5/:Z0sa.4|kiL!_=f!*RM*oL3Xpa|+]sO0N qu4OH9SY9;=<]4V|q(38ME?');
+define("WP_HOME", "http://localhost/demowp/enre/");
+define("WP_SITEURL", "http://localhost/demowp/enre/");
 
 /**#@-*/
 
@@ -78,6 +80,7 @@ $table_prefix  = 'wp_';
  * @link https://codex.wordpress.org/Debugging_in_WordPress
  */
 define('WP_DEBUG', false);
+define('FS_METHOD', 'direct');
 
 /* That's all, stop editing! Happy blogging. */
 
